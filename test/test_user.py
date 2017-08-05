@@ -1,5 +1,5 @@
 import unittest
-from processor.user import User
+from processors.user import User
 
 class TestUser(unittest.TestCase):
 
@@ -20,9 +20,9 @@ class TestUser(unittest.TestCase):
     user = User(name1, surname, email)
     self.assertEqual(user.capitalize_name(name1), 'John')
     name2 = "O'connor"
-    self.assertEqual(user.capitalize_name(name1), "O'Connor")
+    self.assertEqual(user.capitalize_name(name2), "O'Connor")
     name3 = 'Allen'
-    self.assertEqual(user.capitalize_name(name1), "Allen")
+    self.assertEqual(user.capitalize_name(name3), "Allen")
 
   def test_downcase_email(self):
     name = 'john'
@@ -39,15 +39,15 @@ class TestUser(unittest.TestCase):
   def test_verify_email(self):
     name = 'john'
     surname = 'Allen'
-    email1 = "Johnallen@email.com"
+    email1 = "johnallen@email.com"
     user = User(name, surname, email1)
-    self.assertEqual(user.verify_email(email1), true)
-    email2 = "JOHNALLEN@EMAIL.COM"
-    self.assertEqual(user.verify_email(email2), true)
+    self.assertEqual(user.verify_email(email1), True)
+    email2 = "johnallen@email.com"
+    self.assertEqual(user.verify_email(email2), True)
     email3 = "xxxx@asdf@asdf"
-    self.assertEqual(user.verify_email(email3), false)
+    self.assertEqual(user.verify_email(email3), False)
     email4 = "@email.com"
-    self.assertEqual(user.verify_email(email4), false)
+    self.assertEqual(user.verify_email(email4), False)
 
 
 
