@@ -48,6 +48,23 @@ class TestUser(unittest.TestCase):
     email4 = "@email.com"
     self.assertEqual(user.verify_email(email4), False)
 
+  def test_valid_and_invalid_user(self):
+    name1 = 'john'
+    surname1 = 'allen'
+    email1 = "Johnallen@email.com" 
 
+    user1 = User(name1, surname1, email1)
+    self.assertEqual(user1.name, 'John')
+    self.assertEqual(user1.surname, 'Allen')
+    self.assertEqual(user1.email, 'johnallen@email.com')
+
+    name2 = 'john'
+    surname2 = 'allen'
+    email2 = "@Johnallen@email" 
+
+    with self.assertRaises(Exception) as context:
+      user1 = User(name2, surname2, email2)
+
+      self.assertTrue(email2 in context.exception)
 
 
