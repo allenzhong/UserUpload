@@ -88,7 +88,7 @@ Johnny,O'Hare,john@yahoo.com.au"""
     #check inserted data available
     user = User('Allen', 'Allen', 'allen@email.com')
     processor = DataProcessor()
-    processor.insert_data(TABLE_NAME, [user], self.host, self.username, self.password, DATABASE_NAME)
+    processor.insert_data([user], TABLE_NAME, self.host, self.username, self.password, DATABASE_NAME)
 
     query_data_sql = 'SELECT count(*) FROM ' + TABLE_NAME
     cursor.execute(query_data_sql)
