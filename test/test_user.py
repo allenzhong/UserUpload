@@ -12,7 +12,6 @@ class TestUser(unittest.TestCase):
     self.assertEqual(surname, user.surname)
     self.assertEqual(email, user.email)
 
-
   def test_capitalize_name(self):
     name1 = 'john'
     surname = 'Allen'
