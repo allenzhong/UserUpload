@@ -39,9 +39,9 @@ class DataProcessor:
 
         index = index + 1
     except EmailInvalidError as emailErr:
-        raise CSVFormatInvalidError("The format of CSV file is invalid. Check this row: \nName: {0} Surname: {1} Email: {2}".format(name, surname, email)) 
-    except Exception as err: 
-      raise CSVFormatInvalidError("The format of CSV file is invalid.") 
+      raise CSVFormatInvalidError("The format of CSV file is invalid. Check row {3}: \nName: {0} Surname: {1} Email: {2}".format(name, surname, email, index+1))
+    except Exception as err:
+      raise CSVFormatInvalidError("The format of CSV file is invalid.")
     return users
 
   def create_table(self, table_name, host, username, password, database):
@@ -59,7 +59,7 @@ class DataProcessor:
     dbcon.close()
  
   def insert_data(self, users, table_name, host, username, password, database, dry_run=False):
-    insert_user_sql =("INSERT INTO {0} (name, surname, email) VALUES ('{1}', '{2}', '{3}');")
+    insert_user_sql =("INSERT INTO {0} (name, surname, email) VALUES (\"{1}\", \"{2}\", \"{3}\");")
     try:
       dbcon = MySQLdb.connect(host, username, password, database)
       cursor = dbcon.cursor()
@@ -68,8 +68,10 @@ class DataProcessor:
           cursor.execute(insert_user_sql.format(table_name, user.name, user.surname, user.email)) 
         if dry_run:
           dbcon.rollback()
+          print('[Dry run model] has been executed successfully.')
         else:
           dbcon.commit()
+          print('Data has been inserted into table users.')
       except ProgrammingError as err:
         dbcon.rollback()
         print(err.args[1])
