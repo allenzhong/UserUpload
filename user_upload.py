@@ -12,7 +12,7 @@ def parse_arguments():
   parser.add_argument('-u', '--username', required=True, help='MySQL username')
   parser.add_argument('-p', '--password', required=True, help='MySQL password')
   parser.add_argument('-d', '--database', required=True, help='MySQL Database that will create table and insert data')
-  parser.add_argument('-h', '--host', default='localhost', help='MySQL host')
+  parser.add_argument('-h', '--host', default='localhost', help='MySQL host, default is localhost')
 
   args = parser.parse_args()
   handle_process(args)
