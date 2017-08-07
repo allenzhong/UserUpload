@@ -1,9 +1,11 @@
 import re
 
 class EmailInvalidError(Exception):
-  def __init__(self, message, errors):
-    super(EmailInvalidError, self).__init__(message)
-    self.errors = errors
+  def __init__(self, message):
+    self.message = message
+
+  def __str__(self):
+    return self.message
 
 class User(object):
   def __init__(self, name="", surname="", email=""):
@@ -15,7 +17,8 @@ class User(object):
     self._email = self.downcase_email(email)
  
     if not self.verify_email(self._email):
-      raise EmailInvalidError("The given email '{0}' is invalid.".format(value)) 
+      err_string = "The given email '{0}' is invalid.".format(email)
+      raise EmailInvalidError(err_string)
 
   @property
   def name(self):

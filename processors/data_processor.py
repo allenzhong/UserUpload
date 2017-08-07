@@ -1,11 +1,21 @@
 import csv
 import MySQLdb
-from user import User
+from MySQLdb import MySQLError, OperationalError, ProgrammingError
+from user import User, EmailInvalidError
 
 class CSVFormatInvalidError(Exception):
-  def __init__(self, message, errors):
-    super(CSVFormatInvalidError, self).__init__(message)
-    self.errors = errors
+  def __init__(self, message):
+    self.message = message
+
+  def __str__(self):
+      return self.message
+
+class DatabaseError(Exception):
+  def __init__(self, message):
+    self.message = message
+
+  def __str__(self):
+    return self.message
 
 class DataProcessor:
   def __init__(self, csv_file_name=""):
@@ -26,8 +36,11 @@ class DataProcessor:
           email = line[2].strip()
           user = User(name, surname, email)
           users.append(User(name, surname, email))
+
         index = index + 1
-    except Exception: 
+    except EmailInvalidError as emailErr:
+        raise CSVFormatInvalidError("The format of CSV file is invalid. Check this row: \nName: {0} Surname: {1} Email: {2}".format(name, surname, email)) 
+    except Exception as err: 
       raise CSVFormatInvalidError("The format of CSV file is invalid.") 
     return users
 
@@ -45,15 +58,23 @@ class DataProcessor:
     cursor.close()
     dbcon.close()
  
-  def insert_data(self, table_name, users, host, username, password, database):
+  def insert_data(self, users, table_name, host, username, password, database, dry_run=False):
     insert_user_sql =("INSERT INTO {0} (name, surname, email) VALUES ('{1}', '{2}', '{3}');")
-    dbcon = MySQLdb.connect(host, username, password, database)
-    cursor = dbcon.cursor()
     try:
-      for user in users:
-        cursor.execute(insert_user_sql.format(table_name, user.name, user.surname, user.email)) 
-      dbcon.commit()
-    except MySQLError as err:
-      print(err)
-    cursor.close()
-    dbcon.close()
+      dbcon = MySQLdb.connect(host, username, password, database)
+      cursor = dbcon.cursor()
+      try:
+        for user in users:
+          cursor.execute(insert_user_sql.format(table_name, user.name, user.surname, user.email)) 
+        if dry_run:
+          dbcon.rollback()
+        else:
+          dbcon.commit()
+      except ProgrammingError as err:
+        dbcon.rollback()
+        print(err.args[1])
+
+      cursor.close()
+      dbcon.close()
+    except OperationalError as oerr:
+      print(oerr.args[1])
