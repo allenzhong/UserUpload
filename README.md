@@ -8,7 +8,8 @@
 * Software
   * Python 2.7.6
   * MySQL 5.5.x
-* Libraries
+* Additional Libraries
+  * python-mysqldb
 
 
 ## Installation
